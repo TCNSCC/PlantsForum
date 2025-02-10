@@ -20,9 +20,10 @@ namespace PlantsForum.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create()
+        public IActionResult Create(int discussionId)
         {
-            return View();
+            ViewBag.DiscussionId = discussionId;
+            return View(new Comment { DiscussionId = discussionId });
         }
 
         // POST: Comments/Create
@@ -30,17 +31,24 @@ namespace PlantsForum.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CommentId,Content,DicussionId,CreatedAt")] Comment comment)
+        public async Task<IActionResult> Create([Bind("CommentId,Content,DiscussionId,CreateDate")] Comment comment)
         {
             if (ModelState.IsValid)
             {
+                // Set the CreateDate and DiscussionId 
+                comment.CreateDate = DateTime.Now;
+
+                // Add the comment to the context
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Redirect back to the discussion page 
+                return RedirectToAction("GetDiscussion", "Home", new { id = comment.DiscussionId });
             }
+
+            // 
             return View(comment);
         }
-
         // Deleted CRUD actions:
 
         // GET: Comments/Edit/5

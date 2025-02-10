@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace PlantsForum.Models
 {
     public class Comment
@@ -8,10 +9,10 @@ namespace PlantsForum.Models
 
         public string Content { get; set; } = string.Empty;
 
-        public int DicussionId { get; set; }
+        public int DiscussionId { get; set; }
 
         [Display(Name = "Date Created")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreateDate { get; set; } = DateTime.Now;
 
 
 

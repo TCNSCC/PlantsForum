@@ -1,8 +1,33 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<PlantsForum.Models.Discussion>
+
+@{
+    ViewData["Title"] = "My Discussions";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>My Discussions</h1>
+
+<p>
+    <a asp-controller="discussions" asp-action="create" class="btn btn-primary">Create New Discussion</a>
+</p>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="~/images/@item.ImageFilename" alt="@item.Title" style="height: 180px; object-fit: cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Content</p>
+                    <p class="card-text">
+                        <small class="text-muted">Comments: @item.Comment.Count</small>
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">@item.CreateDate.ToString("MMM d, yyyy")</small>
+                    </p>
+                    <a href="@Url.Action("GetDiscussion", "Home", new { id = item.DiscussionId })" class="btn btn-primary">View Discussion</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

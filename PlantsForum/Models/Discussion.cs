@@ -11,7 +11,7 @@ namespace PlantsForum.Models
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
 
-        public string ImageFileName { get; set; } = string.Empty;
+        public string ImageFilename { get; set; } = string.Empty;
 
         // Property for file upload, not mapped in EF
         [NotMapped]
@@ -20,7 +20,7 @@ namespace PlantsForum.Models
 
 
         [Display(Name = "Date Created")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreateDate { get; set; } = DateTime.Now;
 
         // Navigation property
         public List<Comment>? Comment { get; set; }

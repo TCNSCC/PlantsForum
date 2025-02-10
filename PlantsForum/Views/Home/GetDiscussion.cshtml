@@ -1,0 +1,41 @@
+﻿@model PlantsForum.Models.Discussion
+
+@{
+    ViewData["Title"] = "Discussion Details";
+}
+
+<h1>@Model.Title</h1>
+<p>@Model.Content</p>
+
+<!-- Display  image if exists -->
+@if (!string.IsNullOrEmpty(Model.ImageFilename))
+{
+    <img src="~/images/@Model.ImageFilename" alt="@Model.Title" class="img-fluid" style="max-width: 60%; height: auto; padding: 20px;" />
+}
+
+<!--  create date -->
+<p><strong>Created on:</strong> @Model.CreateDate.ToString("MMM d, yyyy @ h:mm tt")</p>
+
+<!--  new comment -->
+<a href="@Url.Action("Create", "Comments", new { discussionId = Model.DiscussionId })" class="btn btn-primary">Add a Comment</a>
+
+<h3>Comments:</h3>
+@if (Model.Comment != null && Model.Comment.Any())
+{
+    <ul class="list-group">
+        @foreach (var comment in Model.Comment)
+        {
+            <li class="list-group-item">
+                <p><strong>@comment.CreateDate.ToString("MMM d, yyyy @ h:mm tt")</strong></p>
+                <p>@comment.Content</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments yet.</p>
+}
+
+<!--  go back to the home page -->
+<a href="@Url.Action("Index", "Home")">Back to Discussions</a>

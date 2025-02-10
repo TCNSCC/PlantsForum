@@ -43,6 +43,8 @@ namespace PlantsForum.Controllers
             return View(discussion);
         }
 
+   
+
         // GET: Discussions/Create
         public IActionResult Create()
         {
@@ -54,32 +56,40 @@ namespace PlantsForum.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DiscussionId,Title,Content,ImageFileName,CreatedAt")] Discussion discussion)
+        public async Task<IActionResult> Create([Bind("DiscussionId,Title,Content,ImageFile,CreateDate")] Discussion discussion)
         {
-            // rename the uploaded file to a guid (unique filename). Set before photo saved in database.
-            discussion.ImageFileName = Guid.NewGuid().ToString() + Path.GetExtension(discussion.ImageFile?.FileName);
-
-            if (ModelState.IsValid)
+            if (discussion.ImageFile != null)
             {
-                // save the photo in database
-                _context.Add(discussion);
-                await _context.SaveChangesAsync();
+                // Generate a unique filename 
+                discussion.ImageFilename = Guid.NewGuid().ToString() + Path.GetExtension(discussion.ImageFile.FileName);
 
-                // save the uploaded file after the photo is saved in the database.
-                if (discussion.ImageFile != null)
+                // Save the discussion record
+                if (ModelState.IsValid)
                 {
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photos", discussion.ImageFileName);
+                    _context.Add(discussion);
+                    await _context.SaveChangesAsync();
+
+                    // Define the path
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", discussion.ImageFilename);
+
+                    // check that directory exists
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                    // Save the image file to the server
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await discussion.ImageFile.CopyToAsync(fileStream);
                     }
-                }
 
-                return RedirectToAction(nameof(Index));
+                    // Redirect to Index 
+                    return RedirectToAction("Index", "Home");
+                }
             }
-           
+
+            //something went wrong, throw valida. errors
             return View(discussion);
         }
+
 
         // GET: Discussions/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -102,7 +112,7 @@ namespace PlantsForum.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DiscussionId,Title,Content,ImageFileName,CreatedAt")] Discussion discussion)
+        public async Task<IActionResult> Edit(int id, [Bind("DiscussionId,Title,Content,ImageFilename,Create")] Discussion discussion)
         {
             if (id != discussion.DiscussionId)
             {

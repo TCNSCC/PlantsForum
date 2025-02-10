@@ -1,53 +1,54 @@
 ﻿@model IEnumerable<PlantsForum.Models.Discussion>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "My Discussions";
 }
 
-<h1>Index</h1>
+<h1>My Discussions</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New Discussion</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
+            <th>Thumbnail</th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Content)</th>
+            <th>@Html.DisplayNameFor(model => model.CreateDate)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DiscussionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DiscussionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DiscussionId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @* Display the image thumbnail if it exists *@
+                    @if (!string.IsNullOrEmpty(item.ImageFilename))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.DiscussionId">
+                            <img src="~/images/@item.ImageFilename" alt="@item.Title" class="thumbnail" width="50" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                <td>@Html.DisplayFor(modelItem => item.Content)</td>
+                <td>@item.CreateDate.ToString("MMM d, yyyy")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.DiscussionId" class="text-secondary">
+                        <i class="fa-solid fa-edit"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.DiscussionId" class="text-secondary">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
